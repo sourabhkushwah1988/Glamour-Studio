@@ -1,0 +1,548 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+      :root {
+        --pink: #f472b6;
+        --red: #ef4444;
+        --yellow: #fcd34d;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        background: #fff;
+        color: #333;
+      }
+
+      /* ---------- Navbar (kept from your design) ---------- */
+      .navbar {
+        background: linear-gradient(to right, #f87171, #ec4899);
+        padding: 1rem 1.5rem;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 50;
+      }
+      .navbar-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .navbar-brand {
+        color: white;
+        font-size: 1.875rem;
+        font-weight: 700;
+      }
+      .navbar-links {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+      }
+      .navbar-links a {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        position: relative;
+      }
+      .navbar-links a::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -6px;
+        width: 0;
+        height: 2px;
+        background: var(--yellow);
+        transition: width 0.25s;
+      }
+      .navbar-links a:hover::after {
+        width: 100%;
+      }
+
+      /* ---------- Split Section ---------- */
+      .container {
+        display: flex;
+        height: 100vh;
+        margin-top: 70px;
+      }
+      .left {
+        flex: 1;
+        background: url("https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1400&q=80")
+          no-repeat center center/cover;
+        position: relative;
+      }
+      .left::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+      }
+      .left h1 {
+        position: absolute;
+        bottom: 20%;
+        left: 10%;
+        color: white;
+        font-size: 3rem;
+        z-index: 2;
+      }
+      .right {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #fff0f5;
+      }
+
+      .form-card {
+        background: rgba(255, 255, 255, 0.18);
+        backdrop-filter: blur(15px);
+        padding: 2rem;
+        border-radius: 20px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+        width: 80%;
+        max-width: 420px;
+      }
+      .form-card h2 {
+        text-align: center;
+        margin-bottom: 1rem;
+        color: #ef4444;
+      }
+      .form-card input,
+      .form-card select,
+      .form-card button {
+        width: 100%;
+        padding: 0.85rem;
+        margin: 0.5rem 0;
+        border: none;
+        border-radius: 10px;
+        font-size: 1rem;
+      }
+      .form-card input,
+      .form-card select {
+        background: rgba(255, 255, 255, 0.95);
+        outline: none;
+      }
+      .form-card button {
+        margin-top: 0.8rem;
+        background: linear-gradient(90deg, var(--pink), var(--red));
+        color: #fff;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 12px 34px rgba(239, 68, 68, 0.18);
+        transition: transform 0.18s, box-shadow 0.18s;
+      }
+      .form-card button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 18px 48px rgba(239, 68, 68, 0.26);
+      }
+
+      /* ---------- POPUP (fancy) ---------- */
+      /* overlay */
+      .overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 250ms ease, visibility 250ms ease;
+        z-index: 2000;
+      }
+      .overlay.show {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      /* popup container */
+      .popup {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%) scale(0.9);
+        width: min(560px, 92%);
+        max-width: 560px;
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.98),
+          rgba(255, 255, 255, 0.96)
+        );
+        border-radius: 16px;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+        padding: 22px 20px;
+        opacity: 0;
+        visibility: hidden;
+        transition: transform 260ms cubic-bezier(0.2, 0.9, 0.1, 1),
+          opacity 220ms ease;
+        z-index: 2100;
+        overflow: visible;
+      }
+      .popup.show {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+        visibility: visible;
+      }
+
+      /* header area with check */
+      .popup-inner {
+        display: flex;
+        gap: 18px;
+        align-items: center;
+      }
+
+      .check-wrap {
+        width: 82px;
+        height: 82px;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          rgba(244, 65, 125, 0.06),
+          rgba(239, 68, 68, 0.08)
+        );
+        display: grid;
+        place-items: center;
+        box-shadow: 0 8px 30px rgba(239, 68, 68, 0.12);
+        position: relative;
+      }
+
+      /* animated SVG checkmark */
+      .check-svg {
+        width: 56px;
+        height: 56px;
+      }
+      .check-svg .circle {
+        stroke: rgba(239, 68, 68, 0.12);
+        stroke-width: 10;
+        fill: none;
+      }
+      .check-svg .tick {
+        stroke: var(--red);
+        stroke-width: 5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+        stroke-dasharray: 60;
+        stroke-dashoffset: 60;
+        transition: stroke-dashoffset 600ms cubic-bezier(0.2, 0.9, 0.1, 1);
+      }
+      .popup.show .check-svg .tick {
+        stroke-dashoffset: 0;
+      }
+
+      /* text */
+      .popup h3 {
+        margin: 0;
+        font-size: 1.25rem;
+        color: #222;
+        font-weight: 800;
+      }
+      .popup p {
+        margin: 6px 0 0 0;
+        color: #444;
+      }
+
+      /* actions */
+      .popup-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 16px;
+        justify-content: flex-end;
+      }
+      .btn-primary {
+        background: linear-gradient(90deg, var(--pink), var(--red));
+        color: #fff;
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: none;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 12px 30px rgba(239, 68, 68, 0.16);
+      }
+      .btn-ghost {
+        background: transparent;
+        color: #666;
+        padding: 8px 12px;
+        border-radius: 10px;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      /* confetti pieces */
+      .confetti {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        overflow: visible;
+      }
+      .confetti-piece {
+        position: absolute;
+        width: 10px;
+        height: 14px;
+        opacity: 0;
+        transform-origin: center;
+        will-change: transform, opacity;
+        border-radius: 2px;
+      }
+      @keyframes confetti-fall {
+        0% {
+          transform: translateY(-40px) rotate(0deg) scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(180px) rotate(520deg) scale(0.9);
+          opacity: 0;
+        }
+      }
+
+      /* responsive */
+      @media (max-width: 640px) {
+        .left h1 {
+          bottom: 18%;
+          left: 6%;
+          font-size: 1.6rem;
+        }
+        .popup {
+          padding: 18px;
+        }
+        .popup-inner {
+          gap: 12px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Navbar -->
+
+    <!-- Split Container -->
+    <div class="container">
+      <div class="left" data-aos="fade-right">
+        <h1>Book Your Glow Session</h1>
+      </div>
+      <div class="right" data-aos="fade-left">
+        <div class="form-card">
+          <h2>Book Appointment</h2>
+          <!-- IMPORTANT: form id used by JS -->
+          <form id="bookingForm" novalidate>
+            <input name="name" type="text" placeholder="Your Name" required />
+            <input
+              name="email"
+              type="email"
+              placeholder="Your Email"
+              required
+            />
+            <input
+              name="phone"
+              type="tel"
+              placeholder="Phone Number"
+              required
+            />
+            <select name="service" required>
+              <option value="">Select Service</option>
+              <option>Haircut</option>
+              <option>Makeup</option>
+              <option>Facial</option>
+              <option>Spa</option>
+            </select>
+            <input name="date" type="date" required />
+            <input name="time" type="time" required />
+            <button type="submit">Book Now</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Overlay -->
+    <div id="overlay" class="overlay" aria-hidden="true"></div>
+
+    <!-- Fancy Popup -->
+    <div
+      id="popup"
+      class="popup"
+      role="dialog"
+      aria-modal="true"
+      aria-hidden="true"
+    >
+      <div class="popup-inner">
+        <div class="check-wrap" aria-hidden="true">
+          <!-- Circle + animated tick -->
+          <svg
+            class="check-svg"
+            viewBox="0 0 64 64"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <circle
+              class="circle"
+              cx="32"
+              cy="32"
+              r="28"
+              stroke-opacity="0.08"
+            />
+            <path class="tick" d="M18 34 L28.5 44.5 L46 22" />
+          </svg>
+        </div>
+
+        <div style="flex: 1">
+          <h3>Booking Confirmed!</h3>
+          <p>
+            Thanks — we've received your request. We'll contact you to confirm
+            the time.
+          </p>
+
+          <div class="popup-actions" style="margin-top: 12px">
+            <button id="viewBookingBtn" class="btn-primary" type="button">
+              View Booking
+            </button>
+            <button id="closePopupBtn" class="btn-ghost" type="button">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- confetti layer -->
+      <div class="confetti" aria-hidden="true"></div>
+    </div>
+
+    <!-- Footer (kept) -->
+   =
+    <!-- AOS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      if (window.AOS) AOS.init({ duration: 900, once: true });
+    </script>
+
+    <!-- Fancy popup JS -->
+    <script>
+      (function () {
+        const form = document.getElementById("bookingForm");
+        const overlay = document.getElementById("overlay");
+        const popup = document.getElementById("popup");
+        const closePopupBtn = document.getElementById("closePopupBtn");
+        const viewBookingBtn = document.getElementById("viewBookingBtn");
+        const confettiContainer = popup.querySelector(".confetti");
+
+        // Create confetti pieces
+        function spawnConfetti(count = 18) {
+          confettiContainer.innerHTML = ""; // clear
+          const colors = [
+            "#ff4e50",
+            "#f9d423",
+            "#ff7ab6",
+            "#ffd166",
+            "#ff6f91",
+          ];
+          for (let i = 0; i < count; i++) {
+            const el = document.createElement("div");
+            el.className = "confetti-piece";
+            const left = Math.random() * 80 + 10; // within popup width
+            const delay = Math.random() * 0.25;
+            const duration = 1.2 + Math.random() * 0.8;
+            el.style.left = left + "%";
+            el.style.top = "-12px";
+            el.style.background =
+              colors[Math.floor(Math.random() * colors.length)];
+            el.style.width = 8 + Math.random() * 8 + "px";
+            el.style.height = 10 + Math.random() * 10 + "px";
+            el.style.borderRadius = Math.random() > 0.6 ? "2px" : "0px";
+            el.style.opacity = 0;
+            el.style.transform = `translateY(-30px) rotate(${
+              Math.random() * 360
+            }deg)`;
+            el.style.animation = `confetti-fall ${duration}s cubic-bezier(.2,.7,.2,1) ${delay}s forwards`;
+            confettiContainer.appendChild(el);
+          }
+        }
+
+        // show popup
+        function openPopup() {
+          spawnConfetti(20);
+          overlay.classList.add("show");
+          popup.classList.add("show");
+          overlay.setAttribute("aria-hidden", "false");
+          popup.setAttribute("aria-hidden", "false");
+
+          // auto-close after 3.6s
+          window.__popupAutoClose = setTimeout(closePopup, 3600);
+        }
+
+        function closePopup() {
+          overlay.classList.remove("show");
+          popup.classList.remove("show");
+          overlay.setAttribute("aria-hidden", "true");
+          popup.setAttribute("aria-hidden", "true");
+          if (window.__popupAutoClose) {
+            clearTimeout(window.__popupAutoClose);
+            window.__popupAutoClose = null;
+          }
+          // clear confetti after short delay to avoid DOM clutter
+          setTimeout(() => (confettiContainer.innerHTML = ""), 800);
+        }
+
+        // attach events
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+          // optional: validate or send data via fetch()
+          form.reset(); // reset form fields
+          openPopup();
+        });
+
+        overlay.addEventListener("click", closePopup);
+        closePopupBtn.addEventListener("click", closePopup);
+
+        viewBookingBtn.addEventListener("click", function () {
+          // default: just close popup and show a quick message.
+          // Replace with redirect: window.location.href = '/my-bookings/';
+          closePopup();
+          setTimeout(() => {
+            alert("Redirecting to bookings (replace with real route).");
+          }, 250);
+        });
+
+        document.addEventListener("keydown", function (ev) {
+          if (ev.key === "Escape") {
+            closePopup();
+          }
+        });
+      })();
+      const modal = document.getElementById("bookingModal");
+      const closeBtn = document.querySelector(".close");
+      const details = document.getElementById("bookingDetails");
+
+      document
+        .getElementById("viewBookingBtn")
+        .addEventListener("click", async () => {
+          // 🔹 Backend me ek Django view banana hoga jo latest booking JSON me return karega
+          // URL: /get-latest-booking/
+          const res = await fetch("/get-latest-booking/");
+          const booking = await res.json();
+
+          if (booking.error) {
+            details.innerHTML = `<p>No booking found</p>`;
+          } else {
+            details.innerHTML = `
+          <p><strong>Name:</strong> ${booking.name}</p>
+          <p><strong>Email:</strong> ${booking.email}</p>
+          <p><strong>Phone:</strong> ${booking.phone}</p>
+          <p><strong>Service:</strong> ${booking.service}</p>
+          <p><strong>Date:</strong> ${booking.date}</p>
+          <p><strong>Time:</strong> ${booking.time}</p>
+        `;
+          }
+          modal.style.display = "block";
+        });
+
+      closeBtn.onclick = () => (modal.style.display = "none");
+      window.onclick = (e) => {
+        if (e.target == modal) modal.style.display = "none";
+      };
+    </script>
+{% endblock %}

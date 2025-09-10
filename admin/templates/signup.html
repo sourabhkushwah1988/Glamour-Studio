@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+
+<style>
+  .signup-page {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(135deg, #ffecd2, #fcb69f);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .signup-page .container {
+    display: flex;
+    flex: 1;
+    width: 100%;
+  }
+
+  .signup-page .left,
+  .signup-page .right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .signup-page .left {
+    background: linear-gradient(135deg, #ff758c, #ff7eb3);
+    color: white;
+    text-align: center;
+    border-radius: 0 30px 30px 0;
+  }
+
+  .signup-page .form-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+  }
+
+  .signup-page .form-card h2 {
+    color: #ff758c;
+    margin-bottom: 1rem;
+  }
+
+  .signup-page .form-card input {
+    width: 100%;
+    padding: 0.8rem;
+    margin: 0.6rem 0;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    outline: none;
+    transition: 0.3s;
+  }
+
+  .signup-page .form-card input:focus {
+    border-color: #ff7eb3;
+    box-shadow: 0 0 6px rgba(255, 126, 179, 0.6);
+  }
+
+  .signup-page .form-card button {
+    background: linear-gradient(90deg, #ff758c, #ff7eb3);
+    color: white;
+    border: none;
+    padding: 0.9rem;
+    width: 100%;
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .signup-page .form-card button:hover {
+    background: linear-gradient(90deg, #ff7eb3, #ff758c);
+    transform: scale(1.05);
+  }
+
+  /* ✅ Success Popup */
+  .signup-page .success-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    z-index: 9999;
+    opacity: 0;
+    transition: 0.4s ease;
+  }
+
+  .signup-page .success-popup.show {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+
+  .signup-page .success-popup i {
+    font-size: 3rem;
+    color: #ff758c;
+    animation: bounce 1s infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+</style>
+
+<div class="signup-page">
+  <div class="container">
+    <div class="left" data-aos="fade-right">
+      <h1>✨ Join Glamour Studio ✨</h1>
+      <p>Discover beauty, book services, and shine with us.</p>
+    </div>
+    <div class="right" data-aos="fade-left">
+      <div class="form-card" data-aos="zoom-in-up">
+        <h2>Create Account</h2>
+        <form method="POST">
+          {% csrf_token %}
+          <input type="text" name="username" placeholder="Username" required />
+          <input type="email" name="email" placeholder="Email" required />
+          <input type="text" name="phone_number" placeholder="Phone Number" />
+          <input type="password" name="password" placeholder="Password" required />
+          <button type="submit">Signup</button>
+        </form>
+        <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ Success Popup (⚠️ AOS removed so it won't show on load) -->
+  <div id="successPopup" class="success-popup">
+    <i class="fas fa-check-circle"></i>
+    <h3>Signup Successful!</h3>
+  </div>
+</div>
+
+<!-- AOS & Confetti -->
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<script>
+  AOS.init({ duration: 1000, once: true });
+
+  function showSuccess(e) {
+    e.preventDefault();
+    const popup = document.getElementById("successPopup");
+    popup.classList.add("show");
+
+    // 🎉 Confetti effect
+    confetti({ particleCount: 200, spread: 80, origin: { y: 0.6 } });
+
+    setTimeout(() => {
+      window.location.href = "{% url 'index' %}";
+    }, 2500);
+  }
+</script>
+{% endblock %}

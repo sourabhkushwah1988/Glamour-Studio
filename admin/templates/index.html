@@ -1,0 +1,1014 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
+  rel="stylesheet"
+/>
+<!-- AOS Library CSS -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+<!-- AOS Library JS -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<style>
+  body {
+    font-family: "Inter", sans-serif;
+    background-color: #fdfcfc; /* Light background */
+  }
+
+  /* Hero Section styles */
+
+  .hero-banner {
+    position: relative;
+    height: calc(100vh - 64px);
+    margin-top: 64px;
+    background-image: url("{% static 'assets/image/main background.png' %}");
+    background-size: cover;
+    background-position: center top;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: black;
+    opacity: 0.4;
+    z-index: 0;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .hero-title {
+    font-size: 3rem; /* text-5xl */
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .hero-title {
+      font-size: 4.5rem; /* text-7xl */
+    }
+  }
+
+  .hero-subtitle {
+    font-size: 1.25rem; /* text-xl */
+    margin-bottom: 2.5rem;
+    max-width: 42rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  @media (min-width: 768px) {
+    .hero-subtitle {
+      font-size: 1.5rem; /* text-2xl */
+    }
+  }
+
+  .hero-button {
+    background-color: #ef4444; /* bg-red-500 */
+    color: white;
+    font-weight: 700;
+    padding: 1rem 2rem;
+    border-radius: 9999px; /* rounded-full */
+    font-size: 1.125rem;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    transform: scale(1);
+    transition: all 0.3s ease-in-out;
+    border: 2px solid #ef4444;
+    display: inline-block;
+  }
+
+  .hero-button:hover {
+    background-color: #dc2626; /* bg-red-600 */
+    border-color: #dc2626; /* border-red-600 */
+    transform: scale(1.05);
+  }
+
+  /* Optional: Animation Placeholder */
+  .animate-fade-in-down {
+    animation: fadeInDown 1s ease-in-out forwards;
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 1s ease-in-out forwards;
+  }
+
+  .animate-pulse-on-hover {
+    transition: transform 0.3s;
+  }
+
+  .group:hover .animate-pulse-on-hover {
+    animation: pulse 1s infinite;
+  }
+
+  /* Section Spacing */
+  #makeup {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+    background-color: white;
+  }
+
+  @media (min-width: 768px) {
+    #makeup {
+      padding-top: 6rem;
+      padding-bottom: 6rem;
+    }
+  }
+
+  /* Headings */
+  .makeup-title {
+    font-size: 2.25rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 3rem;
+    color: #b91c1c; /* red-700 */
+  }
+
+  @media (min-width: 768px) {
+    .makeup-title {
+      font-size: 3rem;
+    }
+  }
+
+  .makeup-subtitle {
+    font-size: 1.875rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #dc2626; /* red-600 */
+  }
+
+  /* Paragraph & List */
+  .makeup-description {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .makeup-list {
+    list-style-type: disc;
+    padding-left: 1rem;
+    font-size: 1.125rem;
+    margin-bottom: 2rem;
+  }
+
+  .makeup-list li {
+    margin-bottom: 0.5rem;
+  }
+
+  /* Button */
+  .makeup-btn {
+    display: inline-block;
+    background-color: #ef4444;
+    color: white;
+    font-weight: bold;
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, background-color 0.3s;
+    text-decoration: none;
+  }
+
+  .makeup-btn:hover {
+    background-color: #dc2626;
+    transform: scale(1.05);
+  }
+
+  /* Image Box */
+  .makeup-img-box {
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    transition: transform 0.3s ease;
+    height: 28rem;
+  }
+
+  .makeup-img-box:hover {
+    transform: scale(1.02);
+  }
+
+  /* Portfolio Card */
+  .makeup-card {
+    background-color: white;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .makeup-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  }
+
+  .makeup-card img {
+    width: 100%;
+    height: 20rem;
+    object-fit: cover;
+  }
+
+  .makeup-card-body {
+    padding: 1.5rem;
+  }
+
+  .makeup-card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #b91c1c;
+  }
+
+  .makeup-card-text {
+    color: #4b5563;
+    font-size: 0.875rem;
+  }
+
+  /* Sample Animations */
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
+
+  /* Custom scrollbar for better aesthetics */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #ff7e5f; /* Warm orange/pink */
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #e6674d; /* Slightly darker */
+  }
+
+  /* Custom Animations */
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .animate-fade-in-down {
+    animation: fadeInDown 1s ease-out forwards;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .animate-fade-in-up {
+    animation: fadeInUp 1s ease-out forwards;
+  }
+
+  @keyframes fadeInSlideUp {
+    from {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .animate-fade-in-slide-up {
+    opacity: 0; /* Hidden by default, JavaScript will add 'show' class */
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  }
+  .animate-fade-in-slide-up.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @keyframes bounceIn {
+    0% {
+      transform: scale(0.1);
+      opacity: 0;
+    }
+    60% {
+      transform: scale(1.05);
+      opacity: 1;
+    }
+    80% {
+      transform: scale(0.95);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  .animate-bounce-in {
+    animation: bounceIn 1s ease-out forwards;
+  }
+
+  @keyframes pulseEffect {
+    0% {
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgba(255, 105, 180, 0.7);
+    }
+    70% {
+      transform: scale(1.05);
+      box-shadow: 0 0 0 10px rgba(255, 105, 180, 0);
+    }
+    100% {
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgba(255, 105, 180, 0);
+    }
+  }
+  .group:hover .animate-pulse-on-hover {
+    animation: pulseEffect 1.5s infinite;
+  }
+</style>
+
+<!-- Hero Section -->
+<section class="hero-banner">
+  <!-- Removed hero-overlay div to eliminate gray overlay -->
+  <div class="hero-content">
+    <h1 class="hero-title" data-aos="fade-down">Unleash Your Inner Radiance</h1>
+    <p class="hero-subtitle" data-aos="fade-up">
+      Expert makeup, stunning nail art, elegant hairstyles, and dream wedding
+      looks.
+    </p>
+    <a href="booking" class="hero-button group">
+      <span class="animate-pulse-on-hover">Book Your Transformation</span>
+    </a>
+    <a
+      href="javascript:void(0);"
+      onclick="openModal()"
+      class="hero-button group"
+    >
+      <span class="animate-pulse-on-hover">Feedback</span>
+    </a>
+  </div>
+</section>
+
+<!-- Feedback Popup -->
+<!-- Feedback modal and form removed as feedback system is disabled -->
+
+<!-- Makeup Artist Section -->
+<section id="makeup">
+  <div class="container mx-auto px-6 md:px-12">
+    <h2 class="makeup-title" data-aos="fade-up">Makeup Artistry</h2>
+    <div class="grid md:grid-cols-2 gap-12 items-center mb-16">
+      <div class="order-2 md:order-1">
+        <p class="makeup-description" data-aos="fade-up">
+          Whether it's a subtle glow for a daytime event or a dramatic look for
+          a special occasion, our expert makeup artists are here to enhance your
+          natural beauty...
+        </p>
+        <ul class="makeup-list" data-aos="fade-up">
+          <li>
+            <strong>Bridal Makeup:</strong> Traditional, contemporary, and
+            destination bridal looks.
+          </li>
+          <li>
+            <strong>Party & Event Makeup:</strong> Glamorous, natural, and
+            themed looks.
+          </li>
+          <li>
+            <strong>Editorial & Photoshoot Makeup:</strong> High-fashion and
+            creative makeup.
+          </li>
+          <li>
+            <strong>Personalized Makeup Consultations:</strong> One-on-one style
+            sessions.
+          </li>
+          <li>
+            <strong>Makeup Classes:</strong> Learn professional techniques.
+          </li>
+        </ul>
+        <a href="#contact" class="makeup-btn">
+          <span class="animate-pulse-on-hover">Explore Makeup Services</span>
+        </a>
+      </div>
+      <div class="order-1 md:order-2 makeup-img-box" data-aos="fade-up">
+        <img
+          src="{% static 'assets/image/main background.png' %}"
+          alt="Makeup Artist at work"
+          class="w-full h-full object-cover"
+        />
+      </div>
+    </div>
+
+    <h3 class="makeup-subtitle" data-aos="fade-up">Our Makeup Portfolio</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="makeup-card">
+        <img
+          src="{% static 'assets/image/Classic Bridal Look.jpeg' %}"
+          alt="Classic Bridal Makeup"
+        />
+        <div class="makeup-card-body">
+          <h4 class="makeup-card-title">Classic Bridal Look</h4>
+          <p class="makeup-card-text">
+            Timeless elegance for your special day.
+          </p>
+        </div>
+      </div>
+      <div class="makeup-card">
+        <img
+          src="{% static 'assets/image/Glam Party Makeup.jpeg' %}"
+          alt="Glam Party Makeup"
+        />
+        <div class="makeup-card-body">
+          <h4 class="makeup-card-title">Glam Party Makeup</h4>
+          <p class="makeup-card-text">
+            Dazzle at any event with a bold, glamorous style.
+          </p>
+        </div>
+      </div>
+      <div class="makeup-card">
+        <img
+          src="{% static 'assets/image/Natural Daytime Look.jpeg' %}"
+          alt="Natural Daytime Makeup"
+        />
+        <div class="makeup-card-body">
+          <h4 class="makeup-card-title">Natural Daytime Look</h4>
+          <p class="makeup-card-text">
+            Enhance your features with a fresh, subtle glow.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Nails Art Section -->
+<section id="nails" class="py-16 md:py-24 bg-red-50">
+  <div class="container mx-auto px-6 md:px-12">
+    <h2
+      class="text-4xl md:text-5xl font-bold text-center mb-12 text-pink-700 animate-bounce-in"
+    >
+      Exquisite Nails Art
+    </h2>
+    <div class="grid md:grid-cols-2 gap-12 items-center mb-16">
+      <div
+        class="rounded-xl shadow-2xl overflow-hidden transform hover:scale-102 transition-transform duration-300"
+        data-aos="fade-up"
+      >
+        <img
+          src="{% static 'assets/image/nail1.png' %}"
+          alt="Various nail art designs"
+          class="w-full h-auto object-cover"
+        />
+      </div>
+      <div data-aos="fade-up">
+        <p class="text-lg leading-relaxed mb-6">
+          Transform your nails into miniature masterpieces. Our skilled nail
+          technicians offer a wide range of services, from classic manicures and
+          pedicures to intricate designs, gel extensions, and dazzling
+          embellishments. We stay updated with the latest trends and techniques
+          to give you nails that truly stand out.
+        </p>
+        <ul
+          class="list-disc list-inside text-lg space-y-2 mb-8"
+          data-aos="fade-up"
+        >
+          <li>**Gel Manicures & Pedicures:** Long-lasting, chip-free color.</li>
+          <li>**Acrylic & Gel Extensions:** For added length and strength.</li>
+          <li>
+            **Custom Nail Art Designs:** Hand-painted, 3D art, ombre, French
+            tips, and more.
+          </li>
+          <li>
+            **Nail Repair & Treatments:** Restore health and beauty to damaged
+            nails.
+          </li>
+          <li>
+            **Spa Manicures & Pedicures:** Relaxing treatments for hands and
+            feet.
+          </li>
+        </ul>
+        <a
+          href="#contact"
+          class="inline-block bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-6 rounded-full shadow-md transform hover:scale-105 transition-all duration-300 group"
+        >
+          <span class="animate-pulse-on-hover">View Nails Portfolio</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Nails Gallery -->
+    <h3
+      class="text-3xl font-bold text-center mb-8 text-pink-600 animate-bounce-in"
+    >
+      Our Nails Art Gallery
+    </h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div
+        class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 hover:shadow-xl transition-all duration-300"
+        data-aos="fade-up"
+      >
+        <img
+          src="{% static 'assets/image/nail2.png' %}"
+          alt="Floral Nail Art"
+          class="w-full h-48 object-cover"
+        />
+        <div class="p-6">
+          <h4 class="text-xl font-semibold mb-2 text-pink-700">
+            Elegant Floral Designs
+          </h4>
+          <p class="text-gray-600 text-sm">
+            Delicate and intricate floral patterns.
+          </p>
+        </div>
+      </div>
+      <div
+        class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 hover:shadow-xl transition-all duration-300"
+        data-aos="fade-up"
+      >
+        <img
+          src="{% static 'assets/image/gel extensions with ombre nail.jpeg' %}"
+          alt="Gel Extensions"
+          class="w-full h-48 object-cover"
+        />
+        <div class="p-6">
+          <h4 class="text-xl font-semibold mb-2 text-pink-700">
+            Gel Extensions & Ombre
+          </h4>
+          <p class="text-gray-600 text-sm">
+            Perfect length and a smooth gradient finish.
+          </p>
+        </div>
+      </div>
+      <div
+        class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 hover:shadow-xl transition-all duration-300"
+        data-aos="fade-up"
+      >
+        <img
+          src="{% static 'assets/image/chic minimalist nail design.jpeg' %}"
+          alt="Minimalist Nail Art"
+          class="w-full h-48 object-cover"
+        />
+        <div class="p-6">
+          <h4 class="text-xl font-semibold mb-2 text-pink-700">
+            Chic Minimalist Nails
+          </h4>
+          <p class="text-gray-600 text-sm">
+            Subtle yet sophisticated designs for everyday.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Hairstyle Section -->
+<section id="hairstyle" class="py-16 md:py-24 bg-white">
+  <div class="container mx-auto px-6 md:px-12">
+    <h2
+      class="text-4xl md:text-5xl font-bold text-center mb-12 text-red-700 animate-bounce-in"
+    >
+      Signature Hairstyles
+    </h2>
+    <div class="grid md:grid-cols-2 gap-12 items-center mb-16">
+      <div class="order-2 md:order-1" data-aos="fade-up">
+        <p class="text-lg leading-relaxed mb-6">
+          From elegant updos to flowing curls, our hairstylists craft the
+          perfect look to complement your features and occasion. We specialize
+          in creating styles that are not only beautiful but also comfortable
+          and long-lasting, ensuring you look picture-perfect throughout your
+          event.
+        </p>
+        <ul
+          class="list-disc list-inside text-lg space-y-2 mb-8"
+          data-aos="fade-up"
+        >
+          <li>
+            **Bridal & Event Hair Styling:** Classic, modern, and bohemian
+            styles.
+          </li>
+          <li>
+            **Haircuts & Coloring:** Precision cuts, highlights, balayage, and
+            full color.
+          </li>
+          <li>
+            **Hair Treatments & Extensions:** Deep conditioning, keratin
+            treatments, and seamless extensions.
+          </li>
+          <li>
+            **Personalized Hair Consultations:** Expert advice for your hair
+            type and desired look.
+          </li>
+          <li>
+            **Blowouts & Styling:** Perfect for everyday glamour or special
+            outings.
+          </li>
+        </ul>
+        <a
+          href="#contact"
+          class="inline-block bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-full shadow-md transform hover:scale-105 transition-all duration-300 group"
+        >
+          <span class="animate-pulse-on-hover">Discover Hair Services</span>
+        </a>
+      </div>
+      <div
+        class="order-1 md:order-2 rounded-xl shadow-2xl overflow-hidden transform hover:scale-102 transition-transform duration-300"
+        data-aos="fade-up"
+      >
+        <img
+          src="{% static 'assets/image/elegent hairstyle.jpg' %}"
+          alt="Various elegant hairstyles"
+          class="w-full h-auto object-cover"
+        />
+      </div>
+    </div>
+
+    <!-- Hairstyle Gallery -->
+    <h3
+      class="text-3xl font-bold text-center mb-8 text-red-600 animate-bounce-in"
+    >
+      Our Hairstyle Collection
+    </h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div
+        class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 hover:shadow-xl transition-all duration-300"
+        data-aos="fade-up"
+      >
+        <img
+          src="{% static 'assets/image/elegant updos.jpg' %}"
+          alt="Elegant Updo"
+          class="w-full h-48 object-cover"
+        />
+        <div class="p-6">
+          <h4 class="text-xl font-semibold mb-2 text-red-700">Elegant Updos</h4>
+          <p class="text-gray-600 text-sm">
+            Sophisticated and classic updos for any formal event.
+          </p>
+        </div>
+      </div>
+      <div
+        class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 hover:shadow-xl transition-all duration-300"
+        data-aos="fade-up"
+      >
+        <img
+          src="{% static 'assets/image/hair 4.jpg' %}"
+          alt="Flowing Curls"
+          class="w-full h-48 object-cover"
+        />
+        <div class="p-6">
+          <h4 class="text-xl font-semibold mb-2 text-red-700">
+            Romantic Flowing Curls
+          </h4>
+          <p class="text-gray-600 text-sm">
+            Soft, natural curls for a romantic and effortless look.
+          </p>
+        </div>
+      </div>
+      <div
+        class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 hover:shadow-xl transition-all duration-300"
+        data-aos="fade-up"
+      >
+        <img
+          src="{% static 'assets/image/hairstyle 1.jpeg' %}"
+          alt="Braided Styles"
+          class="w-full h-48 object-cover"
+        />
+        <div class="p-6">
+          <h4 class="text-xl font-semibold mb-2 text-red-700">
+            Intricate Braided Styles
+          </h4>
+          <p class="text-gray-600 text-sm">
+            From fishtails to Dutch braids, unique and beautiful.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Wedding Section -->
+<section id="wedding" class="py-16 md:py-24 bg-red-50">
+  <div class="container mx-auto px-6 md:px-12">
+    <h2
+      class="text-4xl md:text-5xl font-bold text-center mb-12 text-pink-700 animate-bounce-in"
+    >
+      Your Dream Wedding Look
+    </h2>
+    <div class="grid md:grid-cols-2 gap-12 items-center mb-16">
+      <div
+        class="rounded-xl shadow-2xl overflow-hidden transform hover:scale-102 transition-transform duration-300"
+        data-aos="fade-up"
+      >
+        <img
+          src="{% static 'assets/image/Dream Wedding Look.jpg' %}"
+          alt="Bridal makeup and hair"
+          class="w-full h-auto object-cover"
+        />
+      </div>
+      <div data-aos="fade-up">
+        <p class="text-lg leading-relaxed mb-6">
+          On your most special day, let us create a bridal look that is truly
+          unforgettable. Our comprehensive wedding packages ensure every detail,
+          from your makeup to your hair and nails, is perfect and personalized.
+          We work closely with you to bring your vision to life, ensuring you
+          feel radiant and confident as you walk down the aisle.
+        </p>
+        <ul
+          class="list-disc list-inside text-lg space-y-2 mb-8"
+          data-aos="fade-up"
+        >
+          <li>
+            **Complete Bridal Packages:** Tailored to your needs, including
+            trials and day-of services.
+          </li>
+          <li>
+            **Pre-Wedding Consultations & Trials:** Perfect your look before the
+            big day.
+          </li>
+          <li>
+            **Bridal Party Services:** Makeup and hair for bridesmaids, mothers,
+            and flower girls.
+          </li>
+          <li>
+            **Groom's Grooming:** Light makeup and hair styling for the groom.
+          </li>
+          <li>
+            **On-Location Services Available:** We travel to your venue for
+            convenience.
+          </li>
+        </ul>
+        <a
+          href="#contact"
+          class="inline-block bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-6 rounded-full shadow-md transform hover:scale-105 transition-all duration-300 group"
+        >
+          <span class="animate-pulse-on-hover">Plan Your Bridal Beauty</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Wedding Gallery -->
+    <h3
+      class="text-3xl font-bold text-center mb-8 text-pink-600 animate-bounce-in"
+    >
+      Wedding Portfolio Highlights
+    </h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div
+        class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 hover:shadow-xl transition-all duration-300"
+        data-aos="fade-up"
+      >
+        <img
+          src="{% static 'assets/image/Traditional Bridal Glam.jpg' %}"
+          alt="Traditional Bridal Look"
+          class="w-full h-48 object-cover"
+        />
+        <div class="p-6">
+          <h4 class="text-xl font-semibold mb-2 text-pink-700">
+            Traditional Bridal Glam
+          </h4>
+          <p class="text-gray-600 text-sm">
+            Rich colors and intricate details for a classic wedding.
+          </p>
+        </div>
+      </div>
+      <div
+        class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 hover:shadow-xl transition-all duration-300"
+        data-aos="fade-up"
+      >
+        <img
+          src="{% static 'assets/image/Natural Daytime Look.jpeg' %}"
+          alt="Modern Bridal Look"
+          class="w-full h-48 object-cover"
+        />
+        <div class="p-6">
+          <h4 class="text-xl font-semibold mb-2 text-pink-700">
+            Natural Daytime Look
+          </h4>
+          <p class="text-gray-600 text-sm">
+            Clean lines and soft tones for a contemporary wedding.
+          </p>
+        </div>
+      </div>
+      <div
+        class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 hover:shadow-xl transition-all duration-300"
+        data-aos="fade-up"
+      >
+        <img
+          src="{% static 'assets/image/Destination Wedding Glow mackup.jpg' %}"
+          alt="Destination Bridal Look"
+          class="w-full h-48 object-cover"
+        />
+        <div class="p-6">
+          <h4 class="text-xl font-semibold mb-2 text-pink-700">
+            Destination Wedding Glow
+          </h4>
+          <p class="text-gray-600 text-sm">
+            Radiant and durable looks for exotic locales.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section id="testimonials" class="py-16 md:py-24 bg-white">
+  <div class="container mx-auto px-6 md:px-12">
+    <h2
+      class="text-4xl md:text-5xl font-bold text-center mb-12 text-red-700 animate-bounce-in"
+    >
+      What Our Clients Say
+    </h2>
+      <div id="testimonialsGrid" class="grid md:grid-cols-1 lg:grid-cols-2 gap-8">
+      {% for feedback in feedbacks %}
+      <div class="bg-red-50 p-8 rounded-xl shadow-lg animate-fade-in-slide-up">
+        <p class="text-lg italic mb-4">
+          "{{ feedback.message }}"
+        </p>
+        <p class="font-semibold text-red-700">- {{ feedback.name }}</p>
+      </div>
+      {% empty %}
+      <p class="text-center text-gray-500">No feedback available.</p>
+      {% endfor %}
+      </div>
+</section>
+
+<!-- Call to Action / Contact Section -->
+<section
+  id="contact"
+  class="py-16 md:py-24 bg-gradient-to-r from-red-400 to-pink-500 text-white text-center"
+>
+  <div class="container mx-auto px-6 md:px-12">
+    <h2 class="text-4xl md:text-5xl font-bold mb-8 animate-bounce-in">
+      Ready to Shine?
+    </h2>
+    <p class="text-xl md:text-2xl mb-10 max-w-3xl mx-auto" data-aos="fade-up">
+      Contact us today to schedule your consultation or book an appointment.
+      Let's create your perfect look together!
+    </p>
+    <div
+      class="flex flex-col md:flex-row justify-center items-center space-y-6 md:space-y-0 md:space-x-8"
+    >
+      <a
+        href="tel:+1234567890"
+        class="bg-white text-red-600 hover:bg-gray-100 font-bold py-4 px-8 rounded-full text-lg shadow-xl transform hover:scale-105 transition-all duration-300 ease-in-out flex items-center justify-center group"
+      >
+        <svg
+          class="w-6 h-6 mr-3"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.774a11.037 11.037 0 006.103 6.103l.774-1.548a1 1 0 011.06-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"
+          ></path>
+        </svg>
+        <span class="animate-pulse-on-hover">Call Us: 8085527336</span>
+      </a>
+      <a
+        href="mailto:info@glamourstudio.com"
+        class="bg-white text-pink-600 hover:bg-gray-100 font-bold py-4 px-8 rounded-full text-lg shadow-xl transform hover:scale-105 transition-all duration-300 ease-in-out flex items-center justify-center group"
+      >
+        <svg
+          class="w-6 h-6 mr-3"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"
+          ></path>
+          <path
+            d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"
+          ></path>
+        </svg>
+        <span class="animate-pulse-on-hover"
+          >Email: info@glamourstudio.com</span
+        >
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Login Success Popup -->
+{% if show_login_popup %}
+<div id="loginSuccessPopup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-2xl shadow-lg w-96 p-6 text-center">
+    <i class="fas fa-check-circle text-6xl text-green-500 mb-4"></i>
+    <h3 class="text-xl font-bold text-gray-800 mb-2">Login Successful!</h3>
+    <p class="text-gray-600">Welcome back! Redirecting to home...</p>
+  </div>
+</div>
+{% endif %}
+
+<!-- Footer -->
+
+<script>
+  // Initialize AOS
+  AOS.init();
+
+  // Feedback modal functions
+  function openModal() {
+    document.getElementById("feedbackModal").classList.remove("hidden");
+  }
+
+  function closeModal() {
+    document.getElementById("feedbackModal").classList.add("hidden");
+  }
+
+  // JavaScript for mobile menu toggle
+  document
+    .getElementById("mobile-menu-button")
+    .addEventListener("click", function () {
+      const mobileMenu = document.getElementById("mobile-menu");
+      mobileMenu.classList.toggle("hidden");
+    });
+
+  // Close mobile menu when a link is clicked
+  document.querySelectorAll("#mobile-menu a").forEach((item) => {
+    item.addEventListener("click", () => {
+      document.getElementById("mobile-menu").classList.add("hidden");
+    });
+  });
+  const stars = document.querySelectorAll("#starRating .star");
+  const ratingInput = document.getElementById("ratingInput");
+
+  stars.forEach((star, index) => {
+    star.addEventListener("click", () => {
+      let rating = star.getAttribute("data-value");
+      ratingInput.value = rating;
+
+      // Reset all stars to gray
+      stars.forEach((s) => s.classList.remove("text-yellow-400"));
+      // Highlight selected stars
+      for (let i = 0; i <= index; i++) {
+        stars[i].classList.add("text-yellow-400");
+      }
+    });
+
+    // Hover effect
+    star.addEventListener("mouseover", () => {
+      stars.forEach((s, i) => {
+        s.classList.toggle("text-yellow-300", i <= index);
+      });
+    });
+
+    star.addEventListener("mouseout", () => {
+      stars.forEach((s, i) => {
+        s.classList.remove("text-yellow-300");
+        if (i < ratingInput.value) {
+          s.classList.add("text-yellow-400");
+        }
+      });
+    });
+  });
+
+  // Auto-hide login success popup after 1 second
+  setTimeout(function() {
+    const popup = document.getElementById('loginSuccessPopup');
+    if (popup) {
+      popup.style.display = 'none';
+    }
+  }, 1000);
+
+  // Handle feedback form submission via AJAX
+  // Feedback form and related JS removed as feedback system is disabled
+</script>
+{% endblock %}

@@ -1,0 +1,705 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+<link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+
+<style>
+  body {
+    font-family: "Poppins", sans-serif;
+    background: #f9f9f9;
+    margin: 0;
+    padding: 20px;
+  }
+  .top-search {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: center;
+  }
+  .top-search input,
+  .top-search select {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    flex: 1;
+  }
+  .top-search button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    background: #ff4e50;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .top-search button:hover {
+    background: #fc913a;
+  }
+  .main {
+    display: flex;
+    gap: 20px;
+  }
+  .filters-sidebar {
+    width: 250px;
+    background: #fff;
+    padding: 15px;
+    border: 1px solid #ccc;
+    position: sticky;
+    top: 20px;
+    height: fit-content;
+  }
+  .filter-group {
+    margin-bottom: 15px;
+  }
+  .filter-group-title {
+    width: 100%;
+    background: none;
+    color: #333;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font-weight: 500;
+  }
+  .filter-group-title:hover {
+    background: #f0f0f0;
+  }
+  .filter-list {
+    list-style: none;
+    padding-left: 10px;
+    display: none;
+  }
+  .filter-group.active .filter-list {
+    display: block;
+    margin-top: 5px;
+  }
+  .filter-item {
+    margin: 5px 0;
+    cursor: pointer;
+  }
+  .filter-item input[type="checkbox"] {
+    margin-right: 5px;
+  }
+  .apply-filters {
+    margin-top: 10px;
+    padding: 8px;
+    width: 100%;
+    border: none;
+    background: #fc913a;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  .apply-filters:hover {
+    background: #ff4e50;
+  }
+  .cards {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+  }
+  .card {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  .card img {
+    width: 100%;
+    border-radius: 8px;
+    height: 180px;
+    object-fit: cover;
+    margin-bottom: 10px;
+  }
+  .card h3 {
+    color: #ff4e50;
+    margin: 5px 0;
+    font-size: 16px;
+  }
+  .card p {
+    margin: 4px 0;
+    font-size: 14px;
+    color: #555;
+  }
+  .card button {
+    margin-top: 10px;
+    padding: 8px 15px;
+    background: #fc913a;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .card button:hover {
+    background: #ff4e50;
+  }
+
+  /* Overlay */
+  .overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 999;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+  }
+
+  /* Popup Box */
+  .popup {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 15px;
+    width: 500px;
+    max-width: 100%;
+    position: relative;
+    box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Close Button */
+  .popup .close-btn {
+    position: absolute;
+    top: 12px;
+    right: 5px;
+    font-size: 22px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: #444;
+  }
+
+  .popup .close-btn:hover {
+    background: none;
+    color: #444;
+  }
+
+  .popup h2 {
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+    color: #333;
+  }
+
+  .popup p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 15px;
+  }
+
+  /* Inputs */
+  .popup input,
+  .popup textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 14px;
+    outline: none;
+    transition: 0.3s;
+  }
+
+  .popup input:focus,
+  .popup textarea:focus {
+    border-color: #ff758c;
+    box-shadow: 0 0 6px rgba(255, 118, 136, 0.6);
+  }
+
+  textarea {
+    resize: none;
+    height: 80px;
+  }
+
+  .popup .row {
+    display: flex;
+    gap: 10px;
+  }
+
+  .popup .row input {
+    flex: 1;
+  }
+
+  /* Button */
+  .popup button {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(90deg, #ff4e50, #fc913a);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: 0.3s;
+  }
+
+  .popup button:hover {
+    background: linear-gradient(90deg, #fc913a, #ff4e50);
+    transform: scale(1.03);
+  }
+
+  /* Trigger Button */
+  .trigger-btn {
+    background: linear-gradient(90deg, #ff758c, #ff7eb3);
+    color: white;
+    padding: 12px 25px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .trigger-btn:hover {
+    background: linear-gradient(90deg, #ff7eb3, #ff758c);
+    transform: scale(1.05);
+  }
+
+  /* ✅ Responsive Styles */
+  @media (max-width: 768px) {
+    .popup {
+      padding: 1.5rem;
+    }
+    .popup h2 {
+      font-size: 20px;
+    }
+    .popup p {
+      font-size: 13px;
+    }
+    .popup .row {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .popup {
+      padding: 1rem;
+      border-radius: 12px;
+    }
+    .popup h2 {
+      font-size: 18px;
+    }
+    .popup button {
+      font-size: 15px;
+      padding: 10px;
+    }
+    .trigger-btn {
+      font-size: 14px;
+      padding: 10px 20px;
+    }
+  }
+  .clear-filters {
+    text-align: right;
+    margin-bottom: 10px;
+  }
+  .clear-filters a {
+    font-size: 13px;
+    color: #555;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 30px;
+    height: 16px;
+    float: right;
+  }
+  .switch input {
+    display: none;
+  }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    border-radius: 16px;
+    transition: 0.4s;
+  }
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 12px;
+    width: 12px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.4s;
+  }
+  input:checked + .slider {
+    background-color: #ff4e50;
+  }
+  input:checked + .slider:before {
+    transform: translateX(14px);
+  }
+  [data-aos] {
+    opacity: 0;
+    transition-property: transform, opacity;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    body {
+      padding: 10px;
+    }
+    .top-search {
+      flex-direction: column;
+      gap: 10px;
+    }
+    .top-search input,
+    .top-search select {
+      width: 100%;
+    }
+    .main {
+      flex-direction: column;
+      gap: 10px;
+    }
+    .filters-sidebar {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    .cards {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+    }
+    .card {
+      padding: 10px;
+    }
+    .card img {
+      height: 150px;
+    }
+    .card h3 {
+      font-size: 14px;
+    }
+    .card p {
+      font-size: 12px;
+    }
+    .card button {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .top-search {
+      margin-bottom: 15px;
+    }
+    .filters-sidebar {
+      padding: 10px;
+    }
+    .filter-group-title {
+      padding: 6px;
+      font-size: 14px;
+    }
+    .filter-item {
+      font-size: 14px;
+    }
+    .cards {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .card {
+      padding: 8px;
+    }
+    .card img {
+      height: 120px;
+    }
+    .card h3 {
+      font-size: 13px;
+    }
+    .card p {
+      font-size: 11px;
+    }
+    .card button {
+      padding: 5px 10px;
+      font-size: 11px;
+    }
+  }
+</style>
+
+<div class="top-search" data-aos="fade-down" data-aos-duration="800">
+  <input type="text" id="searchType" placeholder="Search by makeup type" />
+  <select id="searchPrice">
+    <option value="">All Prices</option>
+    <option value="low">Below ₹5,000</option>
+    <option value="medium">₹5,000 - ₹15,000</option>
+    <option value="high">Above ₹15,000</option>
+  </select>
+  <select id="sortBy">
+    <option value="default">Default</option>
+    <option value="low-high">Price: Low to High</option>
+    <option value="high-low">Price: High to Low</option>
+  </select>
+  <button onclick="applyTopSearch()">Search</button>
+</div>
+
+<div class="main">
+  <div class="filters-sidebar" data-aos="fade-right" data-aos-duration="800">
+    <div class="clear-filters">
+      <a href="#" onclick="clearAllFilters(event)">Clear filters</a>
+    </div>
+
+    <!-- Special Filters -->
+    <div class="filter-group">
+      <button class="filter-group-title">Special filters ▼</button>
+      <ul class="filter-list">
+        <li class="filter-item">
+          Deals
+          <label class="switch">
+            <input type="checkbox" class="special-filter" value="deals" />
+            <span class="slider round"></span>
+          </label>
+        </li>
+        <li class="filter-item">
+          Wedding Award Winners
+          <label class="switch">
+            <input type="checkbox" class="special-filter" value="award" />
+            <span class="slider round"></span>
+          </label>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Bridal Makeup -->
+    <div class="filter-group">
+      <button class="filter-group-title">Bridal makeup ▼</button>
+      <ul class="filter-list">
+        <li class="filter-item">
+          <input type="checkbox" class="price-filter" value="5000-9999" />
+          ₹5,000 - ₹9,999
+        </li>
+        <li class="filter-item">
+          <input type="checkbox" class="price-filter" value="10000-14999" />
+          ₹10,000 - ₹14,999
+        </li>
+        <li class="filter-item">
+          <input type="checkbox" class="price-filter" value="15000-19999" />
+          ₹15,000 - ₹19,999
+        </li>
+        <li class="filter-item">
+          <input type="checkbox" class="price-filter" value="20000-24999" />
+          ₹20,000 - ₹24,999
+        </li>
+      </ul>
+    </div>
+
+    <!-- Party Makeup -->
+    <div class="filter-group">
+      <button class="filter-group-title">Party makeup ▼</button>
+      <ul class="filter-list">
+        <li class="filter-item">
+          <input type="checkbox" class="price-filter" value="0-2500" /> Under
+          ₹2,500
+        </li>
+        <li class="filter-item">
+          <input type="checkbox" class="price-filter" value="2500-4999" />
+          ₹2,500 - ₹4,999
+        </li>
+        <li class="filter-item">
+          <input type="checkbox" class="price-filter" value="5000-7499" />
+          ₹5,000 - ₹7,499
+        </li>
+        <li class="filter-item">
+          <input type="checkbox" class="price-filter" value="7500-9999" />
+          ₹7,500 - ₹9,999
+        </li>
+        <li class="filter-item">
+          <input type="checkbox" class="price-filter" value="10000-14999" />
+          ₹10,000 - ₹14,999
+        </li>
+        <li class="filter-item">
+          <input type="checkbox" class="price-filter" value="15000-19999" />
+          ₹15,000 - ₹19,999
+        </li>
+      </ul>
+    </div>
+
+    <!-- Services -->
+    <div class="filter-group">
+      <button class="filter-group-title">Services ▼</button>
+      <ul class="filter-list">
+        <li class="filter-item">
+          <input type="checkbox" class="type-filter" value="Hair styling" />
+          Hair styling
+        </li>
+        <li class="filter-item">
+          <input type="checkbox" class="type-filter" value="Garment draping" />
+          Garment draping
+        </li>
+        <li class="filter-item">
+          <input type="checkbox" class="type-filter" value="Eye lenses" /> Eye
+          lenses
+        </li>
+        <li class="filter-item">
+          <input type="checkbox" class="type-filter" value="Hair extensions" />
+          Hair extensions
+        </li>
+        <li class="filter-item">
+          <input type="checkbox" class="type-filter" value="Eye lashes" /> Eye
+          lashes
+        </li>
+        <li class="filter-item">
+          <input type="checkbox" class="type-filter" value="Nail extensions" />
+          Nail extensions
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div
+    class="cards"
+    id="cardsContainer"
+    data-aos="fade-left"
+    data-aos-duration="800"
+  >
+    <!-- Cards will be dynamically generated here -->
+  </div>
+</div>
+
+<!-- Popup -->
+<div class="overlay" id="popupOverlay">
+  <div class="popup" data-aos="zoom-in">
+    <button class="close-btn" onclick="closePopup()">×</button>
+    <h2 data-aos="fade-down" data-aos-delay="100">Request Pricing</h2>
+    <p data-aos="fade-up" data-aos-delay="200">
+      Fill this form and <b>Glamour Studio</b> will contact you shortly. All the
+      information provided will be treated confidentially.
+    </p>
+
+    <form id="pricingForm" onsubmit="submitForm(event)">
+      <textarea
+        placeholder="Message"
+        data-aos="fade-up"
+        data-aos-delay="300"
+      ></textarea>
+      <input
+        type="text"
+        placeholder="Name and Surname"
+        required
+        data-aos="fade-up"
+        data-aos-delay="400"
+      />
+      <div class="row" data-aos="fade-up" data-aos-delay="500">
+        <input type="email" placeholder="Email" required />
+        <input type="text" placeholder="Phone Number" required />
+      </div>
+      <input
+        type="date"
+        placeholder="Event Date"
+        data-aos="fade-up"
+        data-aos-delay="600"
+      />
+      <button type="submit" data-aos="fade-up" data-aos-delay="700">
+        Send Request
+      </button>
+    </form>
+  </div>
+</div>
+
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script>
+  AOS.init({ duration: 800, once: true });
+
+  function openPopup() {
+    document.getElementById("popupOverlay").style.display = "flex";
+    AOS.refresh();
+  }
+
+  function closePopup() {
+    document.getElementById("popupOverlay").style.display = "none";
+  }
+
+  function submitForm(event) {
+    event.preventDefault();
+    alert("✅ Thank you! We will contact you shortly.");
+    closePopup();
+  }
+
+  // Close popup when clicking outside the popup box
+  document
+    .getElementById("popupOverlay")
+    .addEventListener("click", function (event) {
+      if (event.target === this) {
+        closePopup();
+      }
+    });
+
+  // Ensure close button works
+  document.querySelector(".close-btn").addEventListener("click", closePopup);
+
+  // Toggle filter groups
+  document.querySelectorAll(".filter-group-title").forEach((btn) => {
+    btn.addEventListener("click", () =>
+      btn.parentElement.classList.toggle("active")
+    );
+  });
+
+  // Fetch makeup data and render cards dynamically
+  async function loadMakeupCards() {
+    try {
+      const response = await fetch('/makeup-data/');
+      if (!response.ok) {
+        throw new Error('Failed to fetch makeup data');
+      }
+      const makeups = await response.json();
+      renderMakeupCards(makeups);
+    } catch (error) {
+      console.error('Error loading makeup cards:', error);
+      document.getElementById('cardsContainer').innerHTML = '<p>Error loading makeup data. Please try again later.</p>';
+    }
+  }
+
+  // Render makeup cards dynamically
+  function renderMakeupCards(makeups) {
+    const container = document.getElementById('cardsContainer');
+    container.innerHTML = ''; // Clear existing content
+
+    makeups.forEach(makeup => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.setAttribute('data-aos', 'fade-up');
+      card.setAttribute('data-aos-duration', '600');
+
+      card.innerHTML = `
+        <img src="${makeup.image}" alt="${makeup.name}" />
+        <h3>${makeup.name}</h3>
+        <p>${makeup.description}</p>
+        <p>Price: ${makeup.price}</p>
+        <button class="trigger-btn" onclick="openPopup()">Request Pricing</button>
+      `;
+
+      container.appendChild(card);
+    });
+
+    // Refresh AOS animations for dynamically added elements
+    AOS.refresh();
+  }
+
+  // Load makeup cards when page loads
+  document.addEventListener('DOMContentLoaded', loadMakeupCards);
+</script>
+
+{% endblock %}
